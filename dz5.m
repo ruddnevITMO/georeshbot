@@ -103,7 +103,6 @@ function []=dz5(theid, v11, v21, v31, u11, u21, v12, v22, v32, u12, u22, v13, v2
     un = [v14; v24; v34; u14; u24];
     un = rref(un);
     str = geolin(un);
-    
     fwrite(fid, unicode2native(char(">>Задача 4>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     fclose(fid);

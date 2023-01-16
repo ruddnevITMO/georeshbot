@@ -43,9 +43,9 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     un = delemptys(un);
     un = FSR(un);
     str = geolin(un);
-    if str=="["
-        str = "[]"
-    end
+    % if str=="["
+    %     str = "[]"
+    % end
     fwrite(fid, unicode2native(char(">>Задача 4>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task5

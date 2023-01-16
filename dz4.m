@@ -70,6 +70,9 @@ function []=dz4(theid, un1, e02, e12, e22, e32, un3, un4, v5, e15, e25, e35, v6,
 
     un = [e15 e25 e35];
     str = geolin((inv(un)*v5).');
+    % if str="["
+    %     str = "[]"
+    % end
     fwrite(fid, unicode2native(char("`>>Задача 5>`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task6
