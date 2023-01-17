@@ -136,6 +136,7 @@ for fileName in os.listdir("descriptions"):
 
 
 async def startCommand(update: Update, context: ContextTypes.DEFAULT_TYPE, fromHelp = False) -> None:
+    await beforeRunning(update, context)
     user = update.effective_user
     if not fromHelp:
         await update.message.reply_html(f"Здарова {user.mention_html()}!")
@@ -158,13 +159,12 @@ async def startCommand(update: Update, context: ContextTypes.DEFAULT_TYPE, fromH
 
 
 async def helpCommand(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await beforeRunning(update, context)
     await startCommand(update, context, fromHelp=True)
 
 
 async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if str(update.message.chat_id) != os.getenv("LOG"):
-        await context.bot.forward_message(chat_id = os.getenv("LOG"), from_chat_id = update.message.chat_id, message_id = update.message.id)
-
+    await beforeRunning(update, context)
     message = update.message.text
 
     # Check for illegal characters
@@ -177,14 +177,13 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 
 async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if str(update.message.chat_id) != os.getenv("LOG"):
-        await context.bot.forward_message(chat_id = os.getenv("LOG"), from_chat_id = update.message.chat_id, message_id = update.message.id)
+    await beforeRunning(update, context)
 
     global dlId
     dlId += 1
     dlFileName = "dlId" + str(dlId) + ".txt"
     dl = await context.bot.get_file(update.message.document)
-    if dl.file_size > 150_000:
+    if dl.file_size > 300_000:
         await update.message.reply_text("Размер вашего файла слишком большой!")
         return
 
@@ -368,6 +367,10 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
     
     print("Завершаю выполнение заказа " + str(id) + ", дз " + str(hw) + " для " + str(update.message.from_user['username']))
 
+
+async def beforeRunning(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if str(update.message.chat_id) != os.getenv("LOG"):
+        await context.bot.forward_message(chat_id = os.getenv("LOG"), from_chat_id = update.message.chat_id, message_id = update.message.id)
 
 
 
