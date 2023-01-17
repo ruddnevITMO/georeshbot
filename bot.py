@@ -14,7 +14,6 @@ import os
 import asyncio
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-# __________________________________________________
 
 hwNums = [1, 2, 3, 4, 5]
 
@@ -24,7 +23,6 @@ acceptedChars = list("[] .-1234567890;")
 acceptedChars.append("\n")
 
 
-# ____________________
 
 hwList = """
 
@@ -35,9 +33,6 @@ hwList = """
 Сумма и пересечение подпространств - 5
 
 """
-# ____________________
-
-# ____________________
 
 beforeExampleText = """
 
@@ -47,8 +42,6 @@ beforeExampleText = """
 Но если вы хотите вручную, то вот пример ввода:
 
 """
-# ____________________
-
 
 async def slaewrite1(str):
     coefficients = []
