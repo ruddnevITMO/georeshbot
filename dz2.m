@@ -17,7 +17,7 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">Задача 1>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">🦾 *Задача* 1>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     clear un
     %% task2
@@ -30,7 +30,7 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">>Задача 2>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 2>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(int2str(rank(un))), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
@@ -42,7 +42,7 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     un = delemptys(un);
     un = FSR(un);
     str = geolin(un);
-    fwrite(fid, unicode2native(char(">>Задача 3>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 3>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task4
     disp("task4");
@@ -54,7 +54,7 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">>Задача 4>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 4>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task5
     disp("task5");
@@ -66,7 +66,7 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
         result = 0;
     end
     
-    fwrite(fid, unicode2native(char(">>Задача 5>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 5>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(int2str(result)), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
@@ -84,7 +84,7 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     disp(rank(un));
     
     
-    fwrite(fid, unicode2native(char(">>Задача 6>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 6>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(int2str(rank(un))), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');

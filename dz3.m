@@ -9,7 +9,7 @@ function []=dz3(theid, e01, e11, e21, e31, e41, e02, e12, e22, e32, e42, e52, e0
     un = [e01; e11; e21; e31; e41];
     un = rref(un);
     disp(rank(un));
-    fwrite(fid, unicode2native(char(">Задача 1>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">🦾 *Задача* 1>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(int2str(rank(un))), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
@@ -25,7 +25,7 @@ function []=dz3(theid, e01, e11, e21, e31, e41, e02, e12, e22, e32, e42, e52, e0
     un = rref(un)
     disp(rank(un));
     
-    fwrite(fid, unicode2native(char(">>Задача 2>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 2>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(int2str(rank(un))), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
@@ -43,7 +43,7 @@ function []=dz3(theid, e01, e11, e21, e31, e41, e02, e12, e22, e32, e42, e52, e0
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">>Задача 3>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 3>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task4
     disp("task4");
@@ -53,7 +53,7 @@ function []=dz3(theid, e01, e11, e21, e31, e41, e02, e12, e22, e32, e42, e52, e0
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">>Задача 4>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 4>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task5
     disp("task5");
@@ -66,6 +66,6 @@ function []=dz3(theid, e01, e11, e21, e31, e41, e02, e12, e22, e32, e42, e52, e0
         str="[]";
     end
     
-    fwrite(fid, unicode2native(char(">>Задача 5>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 5>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     fclose(fid);

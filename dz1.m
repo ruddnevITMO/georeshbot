@@ -32,7 +32,7 @@ function []=dz1(theid, f5, g5, e106, e116, e126, x6, e206, e216, e226)
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">Задача 5>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">🦾 *Задача* 5>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task6
     x = x6.';
@@ -51,6 +51,6 @@ function []=dz1(theid, f5, g5, e106, e116, e126, x6, e206, e216, e226)
         str="[]";
     end
     
-    fwrite(fid, unicode2native(char(">>Задача 6>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 6>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     fclose(fid);

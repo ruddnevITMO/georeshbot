@@ -17,7 +17,7 @@ function []=dz5(theid, v11, v21, v31, u11, u21, v12, v22, v32, u12, u22, v13, v2
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">Задача 1>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">🦾 *Задача* 1>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task2
     disp("task2");
@@ -28,7 +28,7 @@ function []=dz5(theid, v11, v21, v31, u11, u21, v12, v22, v32, u12, u22, v13, v2
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">>Задача 2>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 2>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task3
     disp("task3");
@@ -89,11 +89,20 @@ function []=dz5(theid, v11, v21, v31, u11, u21, v12, v22, v32, u12, u22, v13, v2
     un = FSR(un);
     %disp(un);
     str = geolin(un);
+    str3 = geolin(un*3);
+    
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 3>"), 'UTF-8'), 'uint8');
     if str=="["
         str="[]";
+        fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
+    else
+        if str3=="["
+            str3="[]";
+        end
+        fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
+        fwrite(fid, unicode2native(char(">или>"), 'UTF-8'), 'uint8');
+        fwrite(fid, unicode2native(char(str3), 'UTF-8'), 'uint8');
     end
-    fwrite(fid, unicode2native(char(">>Задача 3>"), 'UTF-8'), 'uint8');
-    fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     % dim = size(un);
     % result = zeros((dim(2)-dim(1)),4);
     % un = FSR(un)
@@ -109,9 +118,10 @@ function []=dz5(theid, v11, v21, v31, u11, u21, v12, v22, v32, u12, u22, v13, v2
     str = geolin(un);
     if str=="["
         str="[]";
+
     end
 
-    fwrite(fid, unicode2native(char(">>Задача 4>>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>🦾 *Задача* 4>"), 'UTF-8'), 'uint8');
 
     fwrite(fid, unicode2native(char("Для суммы: >"), 'UTF-8'), 'uint8');
 
@@ -131,12 +141,18 @@ function []=dz5(theid, v11, v21, v31, u11, u21, v12, v22, v32, u12, u22, v13, v2
     un = FSR(un);
     str = geolin(un);
     str3 = geolin(un*3);
+    fwrite(fid, unicode2native(char(">>Для пересечения: >"), 'UTF-8'), 'uint8');
+
     if str=="["
         str="[]";
+        fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
+    else
+        if str3=="["
+            str3="[]";
+        end
+        fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
+        fwrite(fid, unicode2native(char(">или>"), 'UTF-8'), 'uint8');
+        fwrite(fid, unicode2native(char(str3), 'UTF-8'), 'uint8');
     end
-    fwrite(fid, unicode2native(char(">>Для пересечения: >"), 'UTF-8'), 'uint8');
-    fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
-    fwrite(fid, unicode2native(char(">или>"), 'UTF-8'), 'uint8');
-    fwrite(fid, unicode2native(char(str3), 'UTF-8'), 'uint8');
 
     fclose(fid);
