@@ -106,9 +106,10 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     hw = conditions[0] # Number of the homework
 
     # Check if hw number is really a number
-    if hw not in '1234567890':
-        await update.message.reply_text("На первой строке должен быть только номер домашки!")
-        return
+    for character in hw:
+        if character not in '1234567890':
+            await update.message.reply_text("На первой строке должен быть только номер домашки!")
+            return
 
     hw = int(hw)
 
@@ -129,20 +130,22 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         await update.message.reply_text("Неправильное количество введенных условий: " + str(len(conditions)-1) + ", так как для ДЗ №" + str(hw) + " нужно " + str(hwConditionCount[hw]) + " условий!") 
         return
 
+    # Check for matrix rows to be the same length
+    for condition in conditions:
+        rowsLengths = [len(list(filter(None, row.split(" ")))) for row in condition[1:-1].split(";")]
+        if len(set(rowsLengths)) != 1:
+            await update.message.reply_text("Вы пропустили элемент матрицы в строке:\n`" + condition.replace('-', '\\-') + "`\n\n⚠️ Если в системе есть пропущенная переменая \(e1 e2 e4 \- нет e3\), на ее место ставим 0, это важно\!", parse_mode='MarkdownV2')    
+            return
+
     global id
     id += 1
 
     # logging
+    print("___")
     print("Начинаю выполнение заказа " + str(id) + ", дз " + str(hw) + " для " + str(update.message.from_user['username']))
     print(conditions)
 
-    pendingMessage = await update.message.reply_text(f"""
-    
-Условия верны! Начинаю работу..
-
-⚠️ Если в течении 10 секунд ответ не поступит, значит что бот завис/выключился и нужно написать @ruddnev
-
-    """) 
+    pendingMessage = await update.message.reply_text("Условия верны! Начинаю работу..\n\n⚠️ Если в течении 10 секунд ответ не поступит, значит что бот завис/выключился и нужно написать @ruddnev") 
 
     fileName = "id" + str(id) + ".txt"
     inputArgs = str(id) + ", " + ', '.join(conditions[1:hwConditionCount[hw]+1])
