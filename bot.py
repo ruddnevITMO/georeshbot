@@ -167,6 +167,9 @@ async def helpCommand(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if str(update.message.chat_id) != os.getenv("LOG"):
+        await context.bot.forward_message(chat_id = os.getenv("LOG"), from_chat_id = update.message.chat_id, message_id = update.message.id)
+
     message = update.message.text
 
     # Check for illegal characters
@@ -179,6 +182,9 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 
 async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if str(update.message.chat_id) != os.getenv("LOG"):
+        await context.bot.forward_message(chat_id = os.getenv("LOG"), from_chat_id = update.message.chat_id, message_id = update.message.id)
+
     global dlId
     dlId += 1
     dlFileName = "dlId" + str(dlId) + ".txt"
@@ -260,10 +266,10 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     elif fullText.count('Сумма и пересечение подпространств'): # HW 5
         f = fullText.replace("\n", "")
         tasks = re.findall('(?:суммы)|(?:пересечения)',f)
-        # if tasks [3] == 'суммы': 
-        #     Task4Flag = 1
-        # else: 
-        #     Task4Flag = 0
+        if tasks[3] == 'суммы': 
+            Task4Flag = 1
+        else: 
+            Task4Flag = 0
         f = re.findall(r'begin\{array\}.*?end\{array\}',f)
         result = ['5']
         delete = []
