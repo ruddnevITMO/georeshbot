@@ -110,7 +110,11 @@ function []=dz5(theid, v11, v21, v31, u11, u21, v12, v22, v32, u12, u22, v13, v2
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">>Задача 4>"), 'UTF-8'), 'uint8');
+
+    fwrite(fid, unicode2native(char(">>Задача 4>>"), 'UTF-8'), 'uint8');
+
+    fwrite(fid, unicode2native(char("Для суммы: >"), 'UTF-8'), 'uint8');
+
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     
     un1 = [v14; v24; v34];
@@ -126,10 +130,13 @@ function []=dz5(theid, v11, v21, v31, u11, u21, v12, v22, v32, u12, u22, v13, v2
     disp(un);
     un = FSR(un);
     str = geolin(un);
+    str3 = geolin(un*3);
     if str=="["
         str="[]";
     end
-    fwrite(fid, unicode2native(char(">или>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">>Для пересечения: >"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(">или>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char(str3), 'UTF-8'), 'uint8');
 
     fclose(fid);
