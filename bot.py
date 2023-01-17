@@ -77,8 +77,10 @@ async def startCommand(update: Update, context: ContextTypes.DEFAULT_TYPE, fromH
     user = update.effective_user
     if not fromHelp:
         await update.message.reply_html(f"Здарова {user.mention_html()}!")
-    await update.message.reply_text(f"Присылай мне номер дз: {hwList}", disable_notification=True)
+    await update.message.reply_text(f"Присылай мне номер дз, чтобы увидеть пример ввода: {hwList}", disable_notification=True)
     await update.message.reply_text("""
+💹 *Домашки 1 и 5 можно ввести файлами\. Для этого зайдите на страницу домашки на геолине, нажмите Ctrl\+U, затем Ctrl\+A, затем Ctrl\+C, вставьте это в пустой файл и пришлите боту*\.
+
 Условия присылать в порядке чтения, то есть например матрица 2x5 будет выглядеть так 
 `\[1 2 3 4 5; 6 7 8 9 10\]`
 Вертикальные матрицы вида 3x1 транспонируем так
@@ -101,7 +103,7 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     # Check for illegal characters
     for character in message:
         if character not in acceptedChars:
-            await update.message.reply_text("В вашем запросе есть запрещенные символы, например \"" + character + "\"\n Исправьте свой запрос и пришлите его заново.")
+            await update.message.reply_text("В вашем запросе есть запрещенные символы, например \"" + character + "\"\n\nИсправьте свой запрос и пришлите его заново.")
             return
     conditions = message.split("\n")
     await matlab(update, context, conditions=conditions)
@@ -159,7 +161,7 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     for element in conditions:
         for character in element:
             if character not in acceptedChars:
-                await update.message.reply_text("В вашем тексте есть запрещенные символы, например \"" + character + "\"\n Исправьте свой запрос и пришлите его заново.")
+                await update.message.reply_text("В вашем тексте есть запрещенные символы, например \"" + character + "\"\n\nИсправьте свой запрос и пришлите его заново.")
                 return
 
     await matlab(update, context, conditions=conditions)
@@ -222,7 +224,7 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
     await asyncio.sleep(1)
 
     with open(fileName, encoding="utf-8") as file:
-        line = "ДЗ №" + str(hw) + "\n" + file.readline().rstrip().replace(">", "\n")
+        line = "*ДЗ №" + str(hw) + "*\n" + file.readline().rstrip().replace(">", "\n")
         if hw != 4:
             line = line.replace("[", "`[").replace("]", "]`")
 
