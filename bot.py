@@ -121,15 +121,18 @@ for item in os.listdir(rootFolder):
     if item.endswith(".txt"):
         os.remove(os.path.join(rootFolder, item))
 
-# Get examples and count conditions for a card
+# Get examples and count conditions for a card, then count row length
 hwExamples = {}
 hwConditionCount = {}
+hwRowsLengths = {}
 for fileName in os.listdir("examples"):
     with open(os.path.join("examples", fileName), encoding="utf-8") as file:
         card = int(fileName.replace(".txt", ""))
         fullText = file.read()
         hwExamples[card] = fullText
-        hwConditionCount[card] = len(list(filter(None, fullText.split("\n"))))
+        conditions = list(filter(None, fullText.split("\n")))
+        hwConditionCount[card] = len(conditions)
+        hwRowsLengths[card] = [len(list(filter(None, condition[1:-1].split(";")[0].split()))) for condition in conditions]
 
 # Get descriptions
 hwDescriptions = {}
@@ -162,7 +165,6 @@ async def startCommand(update: Update, context: ContextTypes.DEFAULT_TYPE, fromH
 
 
 async def helpCommand(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # await update.message.reply_text("Напиши просто номер домашки, и там будет пример ввода к ней. В нем задания разделены пустой строкой для понимания")
     await startCommand(update, context, fromHelp=True)
 
 
@@ -233,7 +235,6 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             result.append(str(re.findall(r'[-]?\d+', i)))
         conditions = [element.replace("\'", "").replace(",","").replace(" ;", ";") for element in result]
 
-
     elif fullText.count('Линейная оболочка'): # HW 3
         f = fullText.replace("\n", "")
         f = re.findall(r'begin\{array\}.*?end\{array\}',f)
@@ -280,7 +281,7 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         conditions = [element.replace("\'", "").replace(",","") for element in result]
 
     else:
-        await update.message.reply_text("Не смог прочитать ваш файл.\n\n⚠️ Не забывайте, что файлами можно отправлять только ДЗ 1 и ДЗ 5!")
+        await update.message.reply_text("⚠️ Не смог прочитать ваш файл.")
         return
 
 
@@ -323,11 +324,16 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
         await update.message.reply_text("Неправильное количество введенных условий: " + str(len(conditions)-1) + ", так как для ДЗ №" + str(hw) + " нужно " + str(hwConditionCount[hw]) + " условий!") 
         return
 
-    # Check for matrix rows to be the same length
-    for condition in conditions:
-        rowsLengths = [len(list(filter(None, row.split(" ")))) for row in condition[1:-1].split(";")]
+
+    # Check for matrix length and for matrix rows to be the same length 
+    for i in range(len(conditions)):
+        condition = conditions[i]
+        rowsLengths = [len(list(filter(None, row.split()))) for row in condition[1:-1].split(";")]
         if len(set(rowsLengths)) != 1:
-            await update.message.reply_text("Вы пропустили элемент матрицы в строке:\n`" + condition.replace('-', '\\-') + "`\n\n⚠️ Если в системе есть пропущенная переменая \(e1 e2 e4 \- нет e3\), на ее место ставим 0, это важно\!", parse_mode='MarkdownV2')    
+            await update.message.reply_text("⚠️ Вы пропустили элемент матрицы в строке:\n`" + condition.replace('-', '\\-') + "`\n\nЕсли в системе есть пропущенная переменая \(e1 e2 e4 \- нет e3\), на ее место ставим 0, это важно\!", parse_mode='MarkdownV2')    
+            return
+        elif i != 0 and rowsLengths[0] != hwRowsLengths[hw][i]:
+            await update.message.reply_text("⚠️ В условии `" + condition.replace('-', '\\-') + "`неверная длина строки матрицы\! Чисел должно быть " + str(hwRowsLengths[hw][i+1]) + ", а у вас " + str(rowsLengths[0]) + "\!", parse_mode='MarkdownV2')    
             return
 
     global id
