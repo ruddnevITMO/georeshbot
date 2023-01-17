@@ -344,7 +344,7 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
     print("Начинаю выполнение заказа " + str(id) + ", дз " + str(hw) + " для " + str(update.message.from_user['username']))
     print(conditions)
 
-    pendingMessage = await update.message.reply_text("Условия верны! Начинаю работу..\n\n⚠️ Если в течении 10 секунд ответ не поступит, значит что бот завис/выключился и нужно написать @ruddnev") 
+    pendingMessage = await update.message.reply_text("Начинаю работу..\n\n⚠️ Если в течении 10 секунд ответ не поступит, значит что бот завис/выключился и нужно написать @ruddnev") 
 
     fileName = "id" + str(id) + ".txt"
     inputArgs = str(id) + ", " + ', '.join(conditions[1:hwConditionCount[hw]+1])
@@ -356,8 +356,13 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
 
     os.system("matlab -nosplash -nodesktop -minimize -r \"try, dz" + str(hw) + "(" + inputArgs + "), catch, exit, end, exit\"")
     
+    waitedTime = 0
     while not os.path.exists(fileName):
+        if waitedTime > 5:
+            await update.message.reply_text("⚠️ Не смог высчитать ответ. Проверьте, скорее всего в условии есть ошибка.")
+            return
         await asyncio.sleep(1)
+        waitedTime += 1
     await asyncio.sleep(1)
 
     with open(fileName, encoding="utf-8") as file:
