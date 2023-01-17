@@ -41,12 +41,78 @@ hwList = """
 
 beforeExampleText = """
 
-Если вам нужны только некоторые задания, скопируйте пример ввода и измените в нем только части с нужными вам заданиями
+💹 *Эту домашку можно автоматически загрузить в бота\! Для этого нужно зайти на страницу домашки на геолине, нажать Ctrl\+S, куда\-нибудь сохранить и отправить этот файл боту\.*
+*⚠️ Работает только на компьютере*
 
-Пример ввода:
+Но если вы хотите вручную, то вот пример ввода:
 
 """
 # ____________________
+
+
+async def slaewrite1(str):
+    coefficients = []
+    result = '['
+    str = str.replace(" ", "")
+    equations = re.split(r'\\\\', str)
+    for i in equations:
+        coefficients.append(re.findall(r'(?:[-\^]?\d+)|(?:[-]+)', i))
+    for i in coefficients:
+        lastindex = 0
+        for j in range(len(i)):
+            if i[j] == '-':
+                i[j] = '-1'
+            if i[j][0] == '^':
+                while int(i[j][1]) - lastindex > 1:
+                    result += '0 '
+                    lastindex += 1
+                if j != 0:
+                    if i[j - 1][0] != '^':
+                        result += i[j - 1] + ' '
+                    else:
+                        result += '1 '
+                elif j == 0:
+                    result += '1 '
+                lastindex += 1
+            elif j == len(i) - 1:
+                while lastindex < 5:
+                    result += '0 '
+                    lastindex += 1
+                result += i[j] + '; '
+    result = result[:-2] + ']'
+    return result
+
+async def slaewrite2(str):
+    coefficients = []
+    result = '['
+    str = str.replace(" ", "")
+    equations = re.split(r'\\\\', str)
+    for i in equations:
+        coefficients.append(re.findall(r'(?:[-\^]?\d+)|(?:[-]+)', i))
+    for i in coefficients:
+        lastindex = 0
+        for j in range(len(i) - 1):
+            if i[j] == '-':
+                i[j] = '-1'
+            if i[j][0] == '^':
+                while int(i[j][1]) - lastindex > 1:
+                    result += '0 '
+                    lastindex += 1
+                if j != 0:
+                    if i[j - 1][0] != '^':
+                        result += i[j - 1] + ' '
+                    else:
+                        result += '1 '
+                elif j == 0:
+                    result += '1 '
+                lastindex += 1
+                if j == len(i) - 2:
+                    while lastindex < 5:
+                        result += '0 '
+                        lastindex += 1
+                    result += '; '
+    result = result[:-2] + ']'
+    return result
 
 
 # Remove temporary files on start
@@ -79,7 +145,10 @@ async def startCommand(update: Update, context: ContextTypes.DEFAULT_TYPE, fromH
         await update.message.reply_html(f"Здарова {user.mention_html()}!")
     await update.message.reply_text(f"Присылай мне номер дз, чтобы увидеть пример ввода: {hwList}", disable_notification=True)
     await update.message.reply_text("""
-💹 *Домашки 1 и 5 можно ввести файлами\. Для этого зайдите на страницу домашки на геолине, нажмите Ctrl\+U, затем Ctrl\+A, затем Ctrl\+C, вставьте это в пустой файл и пришлите боту*\.
+💹 *Любую домашку можно автоматически загрузить в бот\. Для этого нужно зайти на страницу домашки на геолине, нажать Ctrl\+S, куда\-нибудь сохранить и отправить этот файл боту\.*
+*⚠️ Работает только на компьютере*
+
+Но если вы хотите писать условия вручную, то это нужно делать так:
 
 Условия присылать в порядке чтения, то есть например матрица 2x5 будет выглядеть так 
 `\[1 2 3 4 5; 6 7 8 9 10\]`
@@ -125,17 +194,70 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     os.remove(dlFileName)
 
 
-    if fullText.count("Алгебраические структуры"):
+    if fullText.count('Алгебраические структуры'): # HW 1
         found = re.findall(r'(?:begin\{pmatrix\}.*?end\{pmatrix\})|(?:\\left.*?\\right)', fullText)
-        
         conditions = ['1']
         delete = [0, 1, 2, 12]
         for element in found:
             if found.index(element) not in delete: 
                 conditions.append(str(re.findall(r'[-]?\d+', element)))
-
         conditions = [element.replace("\'", "").replace(",","") for element in conditions]
-    elif fullText.count("Сумма и пересечение подпространств"):
+
+    elif fullText.count('Однородные СЛАУ'): # HW 2
+        f = fullText.replace("\n", "")
+        task5 = re.findall(r'= \(.*?\)', f)
+        task2 = re.findall(r'begin\{array\}.*?end\{array\}', f)
+        task1 = re.findall(r'begin\{cases\}.*?end\{cases\}', f)
+        task4 = [task1.pop()]
+        task3 = [task1.pop()]
+        task6 = [task2.pop()]
+        task2 = re.split(r'\\\\', task2[0])
+        task2.pop()
+        task6 = re.split(r'\\\\', task6[0])
+        task6.pop()
+        result = ['2']
+        result.append(await slaewrite2(task1[0]))
+        for i in task2:
+            result.append(str(re.findall(r'[-]?\d+', i)))
+        result.append(await slaewrite2(task3[0]))
+        result.append(await slaewrite2(task4[0]))
+        for i in task5:
+            result.append(str(re.findall(r'[-]?\d+', i)))
+        for i in task6:
+            result.append(str(re.findall(r'[-]?\d+', i)))
+        conditions = [element.replace("\'", "").replace(",","").replace(" ;", ";") for element in result]
+
+
+    elif fullText.count('Линейная оболочка'): # HW 3
+        f = fullText.replace("\n", "")
+        f = re.findall(r'begin\{array\}.*?end\{array\}',f)
+        result = ['3']
+        for i in f:
+            task5 = re.findall(r'[-]?\d+', i)
+            result.append(str(task5))
+        result.pop()
+        for i in range(4):
+            result.append("[" + ' '.join(task5[i*4:(i+1)*4]) + "]")
+        conditions = [element.replace("\'", "").replace(",","") for element in result]
+
+    elif fullText.count('Неоднородные СЛАУ'): # HW 4
+        f = fullText.replace("\n", "")
+        slae = re.findall(r'begin\{cases\}.*?end\{cases\}', f)
+        result = ['4']
+        result.append(await slaewrite1(slae[0]))
+        for i in range(1, 5):
+            numbers = re.findall(r'[-]?\d+', slae[i])
+            for j in reversed(range(len(numbers))):
+                if j % 2 == 0: numbers.pop(j)
+            result.append(str(numbers))
+        result.append(await slaewrite2(slae[5]))
+        result.append(await slaewrite1(slae[6]))
+        vectors = re.findall(r'= \(.*?\)', f)
+        for i in vectors:
+            result.append(str(re.findall(r'[-]?\d+', i)))
+        conditions = [element.replace("\'", "").replace(",","") for element in result]
+
+    elif fullText.count('Сумма и пересечение подпространств'): # HW 5
         f = fullText.replace("\n", "")
         tasks = re.findall('(?:суммы)|(?:пересечения)',f)
         # if tasks [3] == 'суммы': 
@@ -149,9 +271,8 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             if f.index(i) not in delete: 
                 result.append(str(re.findall(r'[-]?\d+',i)))
         result = result[:21:]
-        print(result)
-
         conditions = [element.replace("\'", "").replace(",","") for element in result]
+
     else:
         await update.message.reply_text("Не смог прочитать ваш файл.\n\n⚠️ Не забывайте, что файлами можно отправлять только ДЗ 1 и ДЗ 5!")
         return
@@ -165,7 +286,6 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
                 return
 
     await matlab(update, context, conditions=conditions)
-
 
 
 async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions) -> None:
@@ -188,7 +308,7 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
     # Only homework oneline
     if len(conditions) == 1:
         await update.message.reply_text(hwDescriptions[hw])
-        await update.message.reply_text(beforeExampleText, disable_notification=True)
+        await update.message.reply_text(beforeExampleText, parse_mode='MarkdownV2', disable_notification=True)
         await update.message.reply_text(f"```\n{hwExamples[hw]}\n```", parse_mode='MarkdownV2', disable_notification=True)
         return
         
@@ -217,6 +337,11 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
     fileName = "id" + str(id) + ".txt"
     inputArgs = str(id) + ", " + ', '.join(conditions[1:hwConditionCount[hw]+1])
 
+    # if hw == 1:
+    #     # Task 1
+    #     for taskIndex in range(1, 5+1):
+
+
     os.system("matlab -nosplash -nodesktop -minimize -r \"try, dz" + str(hw) + "(" + inputArgs + "), catch, exit, end, exit\"")
     
     while not os.path.exists(fileName):
@@ -237,9 +362,8 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
 
 
 
-
-
 def main() -> None:
+    
     application = Application.builder().token(os.getenv("BOT_TOKEN")).build()
 
     application.add_handler(CommandHandler("start", startCommand))
