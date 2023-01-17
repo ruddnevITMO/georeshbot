@@ -29,6 +29,9 @@ function []=dz1(theid, f5, g5, e106, e116, e126, x6, e206, e216, e226)
         end
     end
     str = geolin(v);
+    if str=="["
+        str="[]";
+    end
     fwrite(fid, unicode2native(char(">Задача 5>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task6
@@ -44,6 +47,9 @@ function []=dz1(theid, f5, g5, e106, e116, e126, x6, e206, e216, e226)
     un2 = inv(un2);
     un = un2*un1*x;
     str = geolin(un.');
+    if str=="["
+        str="[]";
+    end
     
     fwrite(fid, unicode2native(char(">>Задача 6>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');

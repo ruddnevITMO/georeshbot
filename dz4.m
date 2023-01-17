@@ -45,6 +45,9 @@ function []=dz4(theid, un1, e02, e12, e22, e32, un3, un4, v5, e15, e25, e35, v6,
     un = rref(un3);
     un = delemptys(un);
     str = geolin(un);
+    if str=="["
+        str="[]";
+    end
     fwrite(fid, unicode2native(char(">Задача 3>`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char("`>"), 'UTF-8'), 'uint8');
@@ -58,6 +61,9 @@ function []=dz4(theid, un1, e02, e12, e22, e32, un3, un4, v5, e15, e25, e35, v6,
     un = FSR(un);
     un = un + b;
     str = geolin(un);
+    if str=="["
+        str="[]";
+    end
     fwrite(fid, unicode2native(char(">Задача 4>`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task5
@@ -70,6 +76,9 @@ function []=dz4(theid, un1, e02, e12, e22, e32, un3, un4, v5, e15, e25, e35, v6,
 
     un = [e15 e25 e35];
     str = geolin((inv(un)*v5).');
+    if str=="["
+        str="[]";
+    end
     % if str="["
     %     str = "[]"
     % end
@@ -85,6 +94,9 @@ function []=dz4(theid, un1, e02, e12, e22, e32, un3, un4, v5, e15, e25, e35, v6,
     %un = inv(un);
     %un = un*v6;
     str = geolin((inv(un)*v6).');
+    if str=="["
+        str="[]";
+    end
     
     fwrite(fid, unicode2native(char("`>>Задача 6>`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');

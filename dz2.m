@@ -14,6 +14,9 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     un = delemptys(un);
     un = FSR(un);
     str = geolin(un);
+    if str=="["
+        str="[]";
+    end
     fwrite(fid, unicode2native(char(">Задача 1>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     clear un
@@ -24,8 +27,13 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     un = null(un).';
     un = round(un.*10000);
     disp(rank(un));
+    if str=="["
+        str="[]";
+    end
     fwrite(fid, unicode2native(char(">>Задача 2>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(int2str(rank(un))), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     %% task3
     disp("task3");
     
@@ -43,9 +51,9 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     un = delemptys(un);
     un = FSR(un);
     str = geolin(un);
-    % if str=="["
-    %     str = "[]"
-    % end
+    if str=="["
+        str="[]";
+    end
     fwrite(fid, unicode2native(char(">>Задача 4>"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(str), 'UTF-8'), 'uint8');
     %% task5
@@ -59,7 +67,9 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     end
     
     fwrite(fid, unicode2native(char(">>Задача 5>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(int2str(result)), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     
     %% task6
     disp("task6");
@@ -75,5 +85,7 @@ function []=dz2(theid, un1, e02, e12, e22, e32, un3, un4, e05, e15, e25, e06, e1
     
     
     fwrite(fid, unicode2native(char(">>Задача 6>"), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fwrite(fid, unicode2native(char(int2str(rank(un))), 'UTF-8'), 'uint8');
+    fwrite(fid, unicode2native(char("`"), 'UTF-8'), 'uint8');
     fclose(fid);
