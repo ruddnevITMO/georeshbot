@@ -17,6 +17,8 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 hwNums = [1, 2, 3, 4, 5]
+prohibitedUserIDs = [848733048, 430123872]
+prohibitedUsernames = []
 
 id = 0
 dlId = 0
@@ -165,7 +167,8 @@ async def helpCommand(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await beforeRunning(update, context)
+    if not await beforeRunning(update, context): return
+
     message = update.message.text
 
     if message.count("<") > 10:
@@ -182,13 +185,13 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 
 async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await beforeRunning(update, context)
+    if not await beforeRunning(update, context): return
 
     global dlId
     dlId += 1
     dlFileName = "dlId" + str(dlId) + ".txt"
     dl = await context.bot.get_file(update.message.document)
-    if dl.file_size > 300_000:
+    if dl.file_size > 1_000_000:
         await update.message.reply_text("Размер вашего файла слишком большой!")
         os.remove(dlFileName)
         return
@@ -299,7 +302,7 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions) -> None:
     conditions = list(filter(None, conditions))
-    hw = conditions[0] # Number of the homework
+    hw = conditions[0].strip() # Number of the homework
 
     # Check if hw number is really a number
     for character in hw:
@@ -378,7 +381,12 @@ async def beforeRunning(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if str(update.message.chat_id) != os.getenv("LOG"):
         await context.bot.forward_message(chat_id = os.getenv("LOG"), from_chat_id = update.message.chat_id, message_id = update.message.id)
 
+    if update.message.from_user.id in prohibitedUserIDs or update.message.from_user.username in prohibitedUsernames:
+        await context.bot.forward_message(chat_id = os.getenv("DEV"), from_chat_id = update.message.chat_id, message_id = update.message.id)
+        return False
 
+    return True
+    
 
 
 def main() -> None:
