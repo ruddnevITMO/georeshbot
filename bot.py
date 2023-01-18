@@ -179,7 +179,7 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     conditions = message.split("\n")
     conditions = list(filter(None, conditions))
     if len(conditions) > (max(hwConditionCount) + 5):
-        await update.message.reply_text("😠 Не нужно выделять страницу вручную и копировать в бота - автоматический ввод поддерживается только в виде файла!")
+        await update.message.reply_text("😠 Не нужно выделять страницу вручную и копировать в бота - автоматический ввод поддерживается только в виде файла, полученного с помощью нажатия Ctrl+S на странице конкретной домашки!")
         return 
 
     # Check for illegal characters
