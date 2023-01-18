@@ -198,7 +198,7 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
     await dl.download_to_drive(dlFileName)
 
-    if not magic.from_file(dlFileName).count("HTML document"):
+    if not magic.from_file(dlFileName).count("document"):
         await update.message.reply_text("Файл не является HTML-кодом. Правильный файл можно получить так: переходите на страницу домашки, дожидаетесь ее полной загрузки, нажимаете Ctrl+S, куда-нибудь сохраняете этот файл, и присылаете его боту.")
         return
 
