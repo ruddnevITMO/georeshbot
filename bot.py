@@ -9,8 +9,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-import re
-import os
+import re # for parsing file input
+import os # for removing files
+import magic # for guessing file type
 import asyncio
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
@@ -167,6 +168,10 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     await beforeRunning(update, context)
     message = update.message.text
 
+    if message.count("<") > 10:
+        await update.message.reply_text("😠 HTML-код страницы нельзя присылать напрямую! Сохраните его в файл и пришлите этот файл боту.")
+        return 
+
     # Check for illegal characters
     for character in message:
         if character not in acceptedChars:
@@ -185,9 +190,14 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     dl = await context.bot.get_file(update.message.document)
     if dl.file_size > 300_000:
         await update.message.reply_text("Размер вашего файла слишком большой!")
+        os.remove(dlFileName)
         return
 
     await dl.download_to_drive(dlFileName)
+
+    if not magic.from_file(dlFileName).count("HTML document"):
+        await update.message.reply_text("Файл не является HTML-кодом. Правильный файл можно получить так: переходите на страницу домашки, дожидаетесь ее полной загрузки, нажимаете Ctrl+S, куда-нибудь сохраняете этот файл, и присылаете его боту.")
+        return
 
     with open(dlFileName, encoding="utf8") as file:
         fullText = file.read()
@@ -273,7 +283,7 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         conditions = [element.replace("\'", "").replace(",","") for element in result]
 
     else:
-        await update.message.reply_text("⚠️ Не смог прочитать ваш файл.")
+        await update.message.reply_text("⚠️ Не смог прочитать ваш файл. Ещё раз: переходите на страницу домашки, дожидаетесь ее полной загрузки, нажимаете Ctrl+S, куда-нибудь сохраняете этот файл, и присылаете его боту.")
         return
 
 
@@ -336,14 +346,10 @@ async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions)
     print("Начинаю выполнение заказа " + str(id) + ", дз " + str(hw) + " для " + str(update.message.from_user['username']))
     print(conditions)
 
-    pendingMessage = await update.message.reply_text("Начинаю работу..\n\n⚠️ Если в течении 10 секунд ответ не поступит, значит что бот завис/выключился и нужно написать @ruddnev") 
+    pendingMessage = await update.message.reply_text("Начинаю работу..\n\n⚠️ Если в течении 10 секунд ответ не поступит, значит что бот завис/выключился") 
 
     fileName = "id" + str(id) + ".txt"
     inputArgs = str(id) + ", " + ', '.join(conditions[1:hwConditionCount[hw]+1])
-
-    # if hw == 1:
-    #     # Task 1
-    #     for taskIndex in range(1, 5+1):
 
 
     os.system("matlab -nosplash -nodesktop -minimize -r \"try, dz" + str(hw) + "(" + inputArgs + "), catch, exit, end, exit\"")
