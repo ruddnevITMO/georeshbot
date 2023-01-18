@@ -138,10 +138,10 @@ for fileName in os.listdir("descriptions"):
         hwDescriptions[card] = file.read()
 
 
-async def startCommand(update: Update, context: ContextTypes.DEFAULT_TYPE, fromHelp = False) -> None:
+async def startCommand(update: Update, context: ContextTypes.DEFAULT_TYPE, greeting = True) -> None:
     await beforeRunning(update, context)
     user = update.effective_user
-    if not fromHelp:
+    if greeting:
         await update.message.reply_html(f"Здарова {user.mention_html()}!")
     await update.message.reply_text(f"Присылай мне номер дз, чтобы увидеть пример ввода: {hwList}", disable_notification=True)
     await update.message.reply_text("""
@@ -163,7 +163,7 @@ async def startCommand(update: Update, context: ContextTypes.DEFAULT_TYPE, fromH
 
 async def helpCommand(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await beforeRunning(update, context)
-    await startCommand(update, context, fromHelp=True)
+    await startCommand(update, context, greeting=False)
 
 
 async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -175,12 +175,19 @@ async def matlabText(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
         await update.message.reply_text("😠 HTML-код страницы нельзя присылать напрямую! Сохраните его в файл и пришлите этот файл боту.")
         return 
 
+    
+    conditions = message.split("\n")
+    conditions = list(filter(None, conditions))
+    if len(conditions) > (max(hwConditionCount) + 5):
+        await update.message.reply_text("😠 Не нужно выделять страницу вручную и копировать в бота - автоматический ввод поддерживается только в виде файла!")
+        return 
+
     # Check for illegal characters
     for character in message:
         if character not in acceptedChars:
             await update.message.reply_text("В вашем запросе есть запрещенные символы, например \"" + character + "\"\n\nИсправьте свой запрос и пришлите его заново.")
             return
-    conditions = message.split("\n")
+        
     await matlab(update, context, conditions=conditions)
 
 
@@ -296,12 +303,12 @@ async def matlabFile(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             if character not in acceptedChars:
                 await update.message.reply_text("В вашем тексте есть запрещенные символы, например \"" + character + "\"\n\nИсправьте свой запрос и пришлите его заново.")
                 return
-
+            
+    conditions = list(filter(None, conditions))
     await matlab(update, context, conditions=conditions)
 
 
 async def matlab(update: Update, context: ContextTypes.DEFAULT_TYPE, conditions) -> None:
-    conditions = list(filter(None, conditions))
     hw = conditions[0].strip() # Number of the homework
 
     # Check if hw number is really a number
