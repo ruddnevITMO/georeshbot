@@ -1,4 +1,5 @@
 .env
 id*.txt
+dl*.txt
 old
 *.asv
